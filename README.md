@@ -1,2 +1,2 @@
 # CineList
-Drifter's Super Whip Ltd Website. A family-run ice cream company's website! Built with React &amp; Tailwind CSS, explore our menu, sustainability focus, and event collaborations. Fork, contribute, and join us in delighting customers!
+CineList: Your ultimate movie companion! Built with Next.js, CineList lets you search, add, and remove movies from your watch list effortlessly. Discover, manage, and enjoy your favorite films. Fork, contribute, and join us in creating the perfect movie-watching experience!
