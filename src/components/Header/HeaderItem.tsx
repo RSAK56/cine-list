@@ -6,8 +6,8 @@ const HeaderItem = (props: IHeaderItemProps) => {
   const { caption, path } = props;
   return (
     <>
-      <Link className="hover:text-red-800" href={path || " "}>
-        <p className="text-md">{caption}</p>
+      <Link className="hover:text-red-600" href={path || " "}>
+        <p className="text-sm font-semibold">{caption}</p>
       </Link>
     </>
   );
