@@ -1,10 +1,9 @@
-import { Button } from "@nextui-org/react";
-
 import Logo from "../logo/Logo";
 import HeaderItem from "./HeaderItem";
 import SearchInput from "../search-input/SearchInput";
 import ThemeToggle from "../theme-toggle/ThemeToggle";
 import AuthButtons from "../auth-buttons/AuthButtons";
+import { headerItems } from "@/utils/constants";
 
 const Header = () => {
   return (
@@ -14,9 +13,9 @@ const Header = () => {
         <div className="flex justify-center items-center gap-4">
           <ThemeToggle />
           <SearchInput />
-          <HeaderItem caption="Home" path="/" />
-          <HeaderItem caption="Trending" path="trending" />
-          <HeaderItem caption="Top Rated" path="top-rated" />
+          {headerItems.map((item, index) => (
+            <HeaderItem key={index} caption={item.caption} path={item.path} />
+          ))}
           <AuthButtons />
         </div>
       </div>
