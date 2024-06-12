@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-
-import { IHeaderItemProps } from "@/common/interfaces/Header.interface";
+interface IHeaderItemProps {
+  caption: string | null;
+  path: string | null;
+}
 
 const HeaderItem = (props: IHeaderItemProps) => {
   const { caption, path } = props;
