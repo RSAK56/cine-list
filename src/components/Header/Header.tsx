@@ -8,12 +8,12 @@ import { SearchIcon } from "../icons/search/SearchIcon";
 const Header = () => {
   return (
     <>
-      <div className="flex justify-around items-center">
+      <div className="flex justify-between items-center px-8 h-16">
         <div className="flex justify-center items-center gap-2">
           <Image alt="logo" src={"/png/logo.png"} width={120} height={120} />
           <p className="text-lg font-thin">Your HD Movies Collection</p>
         </div>
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex justify-center items-center gap-4">
           <ThemeToggle />
           <Input
             classNames={{
@@ -31,6 +31,8 @@ const Header = () => {
             type="search"
           />
           <HeaderItem caption="Home" path="/" />
+          <HeaderItem caption="Trending" path="trending" />
+          <HeaderItem caption="Top Rated" path="top-rated" />
           <div className="flex justify-center items-center gap-2">
             <Button size="sm" className="text-white bg-yellow-500">
               Login
