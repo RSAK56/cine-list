@@ -14,7 +14,7 @@ const ErrorComponent = ({ error, reset }: any) => {
         />
         <h1 className="text-4xl font-bold">Oops!</h1>
         <h2 className="text-2xl font-bold">Something went wrong!</h2>
-        <p className="text-lg">{error.message}</p>
+        <p className="w-min text-center text-lg">{error.message}</p>
         <div className="my-2">
           <button
             onClick={() => reset()}

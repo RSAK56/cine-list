@@ -2,16 +2,13 @@ import {
   IMovieDetails,
   IMovieList,
 } from "@/common/interfaces/Movies.interface";
+import MovieCard from "./MovieCard";
 
 const MovieList = ({ movieList }: { movieList: IMovieList }) => {
   return (
-    <div>
+    <div className="sm:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-4 mx-auto max-w-6xl gap-4">
       {movieList?.results?.map((movie: IMovieDetails, index: number) => {
-        return (
-          <div key={index}>
-            <h2>{movie.original_title}</h2>
-          </div>
-        );
+        return <MovieCard key={index} movie={movie} />;
       })}
     </div>
   );
