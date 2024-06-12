@@ -1,13 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
 
 const ErrorComponent = ({ error, reset }: any) => {
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
-
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       <div className="flex flex-col justify-center items-center flex-grow gap-4">
