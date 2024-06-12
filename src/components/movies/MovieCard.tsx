@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IMovieDetails } from "@/common/interfaces/Movies.interface";
 import Image from "next/image";
 import { InfoIcon } from "../icons/info/InfoIcon";
-import { AddToWatchListIcon } from "../icons/add-to-watchlist/AddToWatchListIcon";
+import Slider from "../rating-meter/Slider";
 
 const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
   const truncatedOverview =
@@ -11,10 +11,12 @@ const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
       ? movie.overview.substring(0, 120) + "..."
       : movie?.overview;
 
-  const movieTitle = movie?.original_title || movie?.title;
+  const movieTitle = movie?.original_title || movie?.name;
   const truncatedTitle =
-    movieTitle?.length > 35 ? movieTitle?.substring(0, 35) + "..." : movieTitle;
-  console.log("movie", movie);
+    movieTitle && movieTitle?.length > 20
+      ? movieTitle?.substring(0, 20) + "..."
+      : movieTitle;
+
   return (
     <div className="flex justify-center items-center transition-all duration-500 relative">
       <Link href={`/movie/${movie?.id}`}>
@@ -35,12 +37,14 @@ const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
             <h3 className="h-fit">
               <InfoIcon width={18} height={18} fillColor="white" />
             </h3>
-            <p className={`text-white text-sm`}>{movie?.release_date}</p>
+            <p className={`text-white text-sm`}>
+              {movie?.release_date || movie?.first_air_date}
+            </p>
           </div>
           <p className={`text-white text-sm`}>{truncatedOverview}</p>
-          {/* <div className="transition-all duration-500 hover:transform translate-y--2px">
-            <AddToWatchListIcon width={20} height={20} fillColor="#eab308" />
-          </div> */}
+          <div className="float-right">
+            <Slider rating={movie?.vote_average} clockwise={true} />
+          </div>
         </div>
       </Link>
     </div>

@@ -14,6 +14,9 @@ export interface IMovieDetails {
   vote_average: number;
   vote_count: number;
   media_type?: string;
+  original_name?: string;
+  name?: string;
+  first_air_date?: string;
 }
 
 export interface IMovieList {
