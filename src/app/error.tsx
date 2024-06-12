@@ -1,13 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
 
 const ErrorComponent = ({ error, reset }: any) => {
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
-
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       <div className="flex flex-col justify-center items-center flex-grow gap-4">
@@ -19,7 +14,7 @@ const ErrorComponent = ({ error, reset }: any) => {
         />
         <h1 className="text-4xl font-bold">Oops!</h1>
         <h2 className="text-2xl font-bold">Something went wrong!</h2>
-        <p className="text-lg">{error.message}</p>
+        <p className="w-min text-center text-lg">{error.message}</p>
         <div className="my-2">
           <button
             onClick={() => reset()}

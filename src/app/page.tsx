@@ -16,7 +16,7 @@ const Home = async ({ searchParams }: HomeProps) => {
   }?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
 
   try {
-    const fetchMovies = await fetch(apiUrl);
+    const fetchMovies = await fetch(apiUrl, { next: { revalidate: 6000000 } });
 
     if (!fetchMovies.ok) {
       throw new Error(
