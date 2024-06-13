@@ -2,7 +2,7 @@ import Logo from "../logo/Logo";
 import HeaderItem from "./HeaderItem";
 import SearchInput from "../search-input/SearchInput";
 import ThemeToggle from "../theme-toggle/ThemeToggle";
-import LoginButton from "../login-button/LoginButton";
+import AuthButtons from "../auth-buttons/AuthButtons";
 import { headerItems } from "@/utils/constants";
 
 const Header = () => {
@@ -20,7 +20,7 @@ const Header = () => {
           ))}
         </div>
 
-        <LoginButton />
+        <AuthButtons />
       </div>
     </div>
   );
