@@ -26,8 +26,8 @@ const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
             movie?.poster_path || movie?.backdrop_path
           }`}
           alt="movie-poster"
-          width={500}
-          height={300}
+          width={276}
+          height={414}
           className="sm:rounded-lg"
         />
         {/* content */}
