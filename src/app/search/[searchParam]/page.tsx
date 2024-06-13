@@ -4,7 +4,7 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const SearchResults = async ({ params }: any) => {
   const searchParams = params.searchParam;
-  const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${searchParams}&language=en-US&page=1&include_adults=false`;
+  const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${searchParams}&language=en-US&page=2&include_adult=false`;
 
   const fetchedSearchResults = await fetch(apiUrl);
   const searchResultsJSON = await fetchedSearchResults.json();
