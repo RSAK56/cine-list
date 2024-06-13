@@ -1,4 +1,4 @@
-import MovieList from "@/components/movies/MovieList";
+import MovieList from "@/components/movie/MovieList";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
