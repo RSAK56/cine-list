@@ -2,7 +2,7 @@ import Logo from "../logo/Logo";
 import HeaderItem from "./HeaderItem";
 import SearchInput from "../search-input/SearchInput";
 import ThemeToggle from "../theme-toggle/ThemeToggle";
-import AuthButtons from "../auth-buttons/AuthButtons";
+import LoginButton from "../login-button/LoginButton";
 import { headerItems } from "@/utils/constants";
 
 const Header = () => {
@@ -19,7 +19,8 @@ const Header = () => {
             <HeaderItem key={index} caption={item.caption} path={item.path} />
           ))}
         </div>
-        <AuthButtons />
+
+        <LoginButton />
       </div>
     </div>
   );
