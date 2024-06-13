@@ -17,7 +17,11 @@ const ProfileDropdown = ({ user, handleSignOut }: IProfileDropdownProps) => {
     <div className="w-10 h-10 hover:cursor-pointer">
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
-          <Avatar isBordered color="danger" src="/png/auth-avatar.png" />
+          <Avatar
+            isBordered
+            color="danger"
+            src={user?.image || "/png/auth-avatar.png"}
+          />
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
           <DropdownItem key="profile" className="h-14 gap-2">

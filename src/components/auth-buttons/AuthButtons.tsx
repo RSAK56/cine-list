@@ -21,7 +21,6 @@ const AuthButtons = () => {
 
   if (session) {
     const { user } = session;
-
     return <ProfileDropdown user={user} handleSignOut={handleSignOut} />;
   }
 
