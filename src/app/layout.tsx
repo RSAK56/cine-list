@@ -5,7 +5,7 @@ import Providers from "./providers";
 import Header from "@/components/header/Header";
 
 import "./globals.css";
-import { getSession } from "@/utils/session";
+import { getSession } from "@/app/lib/session";
 
 const inter = Inter({ subsets: ["latin"] });
 
