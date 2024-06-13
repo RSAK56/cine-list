@@ -8,7 +8,7 @@ import "react-circular-progressbar/dist/styles.css";
 const Slider = ({ rating, clockwise }: any) => {
   const percentage = Math.ceil((rating / 10) * 100);
   return (
-    <div style={{ width: 32, height: 32 }}>
+    <div className="w-8 h-8">
       <CircularProgressbarWithChildren
         value={percentage}
         styles={buildStyles({
@@ -21,7 +21,7 @@ const Slider = ({ rating, clockwise }: any) => {
           backgroundColor: "#3e98c7",
         })}
       >
-        <div className="text-[10px] text-white">
+        <div className="text-[10px]">
           <strong>{percentage}%</strong>
         </div>
       </CircularProgressbarWithChildren>

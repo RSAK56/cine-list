@@ -27,7 +27,7 @@ const Home = async ({ searchParams }: HomeProps) => {
     const fetchedMoviesJSON: IMovieList = await fetchMovies.json();
 
     return (
-      <div>
+      <div className="sm:mt-20">
         <MovieList movieList={fetchedMoviesJSON} />
       </div>
     );
