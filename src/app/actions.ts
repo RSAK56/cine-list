@@ -1,12 +1,85 @@
 "use server";
 import { NextResponse } from "next/server";
 
+import { AdapterUser } from "next-auth/adapters";
+
+import { Account, Profile, User } from "next-auth";
+
 import { PrismaClient } from "@prisma/client";
 
 import { IMovieDetails, IMovieList } from "@/common/interfaces/movie.interface";
 
 const prisma = new PrismaClient();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+
+// User
+export const createUser = async (
+  email: string | null | undefined,
+  name: string,
+  image: string,
+) => {
+  try {
+    // Create new user in the database
+    let newUser;
+    if (email && name && image) {
+      newUser = await prisma.user.create({
+        data: {
+          email,
+          name,
+          image,
+        },
+      });
+    }
+
+    if (newUser) {
+      // Create an empty watch list for new user
+      await prisma.watchList.create({
+        data: {
+          userId: newUser.id,
+          movieIds: "[]",
+        },
+      });
+      return newUser;
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { message: "An error has occured while creating a new user!" },
+      { status: 404 },
+    );
+  }
+};
+
+// Auth
+export async function signIn({
+  user,
+  account,
+  profile,
+}: {
+  user: User | AdapterUser;
+  account: Account | null;
+  profile?: Profile | undefined;
+  email?: { verificationRequest?: boolean | undefined } | undefined;
+  credentials?: Record<string, any> | undefined;
+}): Promise<boolean> {
+  try {
+    const email = user?.email;
+    const name = user?.name || profile?.name || "";
+    const image = user?.image || profile?.image || "";
+
+    // Check if the user already exists in your database
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email || undefined },
+    });
+
+    if (!existingUser) {
+      await createUser(email, name, image);
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 // Watchlist
 export const addMovieToWatchlist = async ({
