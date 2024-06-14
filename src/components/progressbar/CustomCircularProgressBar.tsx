@@ -5,7 +5,7 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const CustomCircularProgressBar = ({ rating, clockwise }: any) => {
+const CustomCircularProgressBar = ({ rating }: { rating: number }) => {
   const percentage = Math.ceil((rating / 10) * 100);
   return (
     <div className="w-8 h-8">

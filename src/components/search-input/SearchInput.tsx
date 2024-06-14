@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, KeyboardEvent, FormEvent } from "react";
+import { useState, KeyboardEvent } from "react";
 
 import { Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 
 import { SearchIcon } from "../icons/search/SearchIcon";
+import { TSearchEvent } from "@/common/types/events.types";
 
 const SearchInput = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const SearchInput = () => {
     setSearchParam(inputValue);
   };
 
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+  const handleSearch = (e: TSearchEvent) => {
     e.preventDefault();
     router.push(`/search/${searchParam}`);
   };
@@ -23,7 +24,7 @@ const SearchInput = () => {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleSearch(e as any); // We cast to `any` here because `handleSearch` expects a `FormEvent<HTMLFormElement>`
+      handleSearch(e);
     }
   };
 

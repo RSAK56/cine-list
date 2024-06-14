@@ -89,10 +89,7 @@ const MovieDetailsInfo = ({
           {movieInfo?.title || movieInfo?.name}
         </h1>
         <div>
-          <CustomCircularProgressBar
-            rating={movieInfo?.vote_average}
-            clockwise={true}
-          />
+          <CustomCircularProgressBar rating={movieInfo?.vote_average} />
         </div>
       </div>
       <div className="flex flex-col justify-center items-start">

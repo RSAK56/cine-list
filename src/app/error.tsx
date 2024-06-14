@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 
-const ErrorComponent = ({ error, reset }: any) => {
+import { IErrorProps } from "@/common/interfaces/Error";
+
+const ErrorComponent = ({ error, reset }: IErrorProps) => {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       <div className="flex flex-col justify-center items-center flex-grow gap-4">

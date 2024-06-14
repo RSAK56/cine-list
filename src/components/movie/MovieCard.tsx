@@ -43,10 +43,7 @@ const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
           </div>
           <p className={`text-white text-sm`}>{truncatedOverview}</p>
           <div className="float-right">
-            <CustomCircularProgressBar
-              rating={movie?.vote_average}
-              clockwise={true}
-            />
+            <CustomCircularProgressBar rating={movie?.vote_average} />
           </div>
         </div>
       </Link>

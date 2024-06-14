@@ -1,8 +1,9 @@
+import { IServerSideProps } from "@/common/interfaces/ServerSideProps.interface";
 import MovieList from "@/components/movie/MovieList";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
-const SearchResults = async ({ params }: any) => {
+const SearchResults = async ({ params }: IServerSideProps) => {
   const searchParams = params.searchParam;
   const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${searchParams}&language=en-US&page=1&include_adult=false`;
 

@@ -10,20 +10,26 @@ import { getWatchList } from "@/app/actions";
 import MoviePoster from "@/components/movie/MoviePoster";
 import MovieDetailsInfo from "@/components/movie/MovieDetailsInfo";
 import MovieProductionDetails from "@/components/movie/MovieProductionDetails";
+import { IServerSideProps } from "@/common/interfaces/ServerSideProps.interface";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
-const MovieDetails = async ({ params }: any) => {
+const MovieDetails = async ({ params }: IServerSideProps) => {
   const session: Session | null = await getServerSession();
-  const watchListMovieIds: number[] = await getWatchList({
+
+  const fetchedWatchList = await getWatchList({
     email: session?.user?.email,
   });
+  const watchListMovieIds: number[] = Array.isArray(fetchedWatchList)
+    ? fetchedWatchList
+    : [];
 
   const movieId = params?.id;
   const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
 
   const fetchedMovieInfo = await fetch(apiUrl);
-  const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo.json();
+  const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo?.json();
+
   const movieExistsInWatchList = watchListMovieIds?.includes(movieInfoJSON?.id);
 
   return (

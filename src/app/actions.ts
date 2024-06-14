@@ -133,7 +133,7 @@ export const removeMovieFromWatchlist = async ({
     if (watchList) {
       let movieIds = JSON.parse(watchList.movieIds);
 
-      movieIds = movieIds.filter((id: any) => id !== movieId);
+      movieIds = movieIds?.filter((id: number) => id !== movieId);
 
       watchList = await prisma.watchList.update({
         where: { userId: user?.id },
