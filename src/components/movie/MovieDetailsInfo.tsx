@@ -10,7 +10,7 @@ import { formatRuntime } from "@/utils/helpers";
 
 import { addMovieToWatchlist, removeMovieFromWatchlist } from "@/app/actions";
 
-import Slider from "../rating-meter/Slider";
+import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
 import { HeartIcon } from "@/components/icons/heart/Heart";
 import { AddStar } from "@/components/icons/star/AddStar";
 import {
@@ -89,7 +89,10 @@ const MovieDetailsInfo = ({
           {movieInfo?.title || movieInfo?.name}
         </h1>
         <div>
-          <Slider rating={movieInfo?.vote_average} clockwise={true} />
+          <CustomCircularProgressBar
+            rating={movieInfo?.vote_average}
+            clockwise={true}
+          />
         </div>
       </div>
       <div className="flex flex-col justify-center items-start">

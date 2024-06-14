@@ -2,7 +2,7 @@ import Logo from "../logo/Logo";
 import HeaderItem from "./HeaderItem";
 import SearchInput from "../search-input/SearchInput";
 import ThemeToggle from "../theme-toggle/ThemeToggle";
-import AuthButtons from "../auth-buttons/AuthButtons";
+import AuthButtons from "../button/AuthButtons";
 import { headerItems } from "@/utils/constants";
 
 const Header = () => {

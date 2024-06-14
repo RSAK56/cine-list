@@ -7,7 +7,7 @@ import { Button } from "@nextui-org/react";
 
 import { IUser } from "@/common/interfaces/User.interface";
 
-import ProfileDropdown from "../drop-downs/ProfileDropdown";
+import ProfileDropdown from "../drop-down/ProfileDropdown";
 
 const AuthButtons = () => {
   const router = useRouter();
