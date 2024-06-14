@@ -1,23 +1,23 @@
 "use client";
 import { Session } from "next-auth";
-
 import { Button } from "@nextui-org/react";
 
+import { useState } from "react";
+
 import { toast } from "react-hot-toast";
-
-import Slider from "../rating-meter/Slider";
-
-import { HeartIcon } from "@/components/icons/heart/Heart";
-import { AddToWatchListIcon } from "@/components/icons/add-to-watchlist/AddToWatchListIcon";
-
-import {
-  IFetchedMovieInfo,
-  IGenre,
-} from "@/common/interfaces/Movies.interface";
 
 import { formatRuntime } from "@/utils/helpers";
 
 import { addMovieToWatchlist, removeMovieFromWatchlist } from "@/app/actions";
+
+import Slider from "../rating-meter/Slider";
+import { HeartIcon } from "@/components/icons/heart/Heart";
+import { AddStar } from "@/components/icons/star/AddStar";
+import {
+  IFetchedMovieInfo,
+  IGenre,
+} from "@/common/interfaces/Movies.interface";
+import { RemoveStar } from "../icons/star/RemoveStar";
 
 const MovieDetailsInfo = ({
   session,
@@ -30,59 +30,56 @@ const MovieDetailsInfo = ({
 }) => {
   const email = session?.user?.email;
   const movieId = movieInfo?.id;
+  const [isMovieInWatchlist, setIsMovieInWatchlist] = useState<boolean>(
+    movieExistsInWatchList,
+  );
 
-  const handleAddMovieToWatchList = async () => {
+  const handleWatchlistChange = async (action: "add" | "remove") => {
     if (email && movieId) {
-      const res = await addMovieToWatchlist({ email, movieId });
-      toast.success(
-        res ? "Movie added to watchlist" : "Movie already added to watchlist",
-      );
+      const res =
+        action === "add"
+          ? await addMovieToWatchlist({ email, movieId })
+          : await removeMovieFromWatchlist({ email, movieId });
+
+      if (res) {
+        setIsMovieInWatchlist(action === "add");
+        toast.success(
+          action === "add"
+            ? "Movie added to watchlist"
+            : "Movie removed from watchlist",
+        );
+      } else {
+        toast.error(
+          action === "add"
+            ? "Movie already added to watchlist"
+            : "Unable to remove movie from watchlist",
+        );
+      }
     }
   };
 
-  const handleRemoveMovieFromWatchList = async () => {
-    if (email && movieId) {
-      const res = await removeMovieFromWatchlist({ email, movieId });
-      toast.success(
-        res
-          ? "Movie removed from watchlist"
-          : "Unable to remove movie from watchlist",
-      );
-    }
-  };
-
-  const addToWatchlistButton = () => {
-    if (!movieExistsInWatchList) {
-      return (
-        <Button
-          color="danger"
-          variant="bordered"
-          className="h-8"
-          startContent={
-            <AddToWatchListIcon height={20} width={20} fillColor="#EAB308" />
-          }
-          onClick={handleAddMovieToWatchList}
-        >
-          Add To Watchlist
-        </Button>
-      );
-    }
-
-    if (movieExistsInWatchList) {
-      return (
-        <Button
-          color="danger"
-          variant="bordered"
-          className="h-8"
-          startContent={
-            <AddToWatchListIcon height={20} width={20} fillColor="#EAB308" />
-          }
-          onClick={handleRemoveMovieFromWatchList}
-        >
-          Remove From Watchlist
-        </Button>
-      );
-    }
+  const WatchlistButton = () => {
+    const buttonText = isMovieInWatchlist
+      ? "Remove From Watchlist"
+      : "Add To Watchlist";
+    const handleClick = () =>
+      handleWatchlistChange(isMovieInWatchlist ? "remove" : "add");
+    const icon = isMovieInWatchlist ? (
+      <RemoveStar height={20} width={20} fillColor="#EAB308" />
+    ) : (
+      <AddStar height={20} width={20} fillColor="#EAB308" />
+    );
+    return (
+      <Button
+        color="danger"
+        variant="bordered"
+        className="h-8"
+        startContent={icon}
+        onClick={handleClick}
+      >
+        {buttonText}
+      </Button>
+    );
   };
 
   return (
@@ -91,7 +88,7 @@ const MovieDetailsInfo = ({
         <h1 className="text-xl font-bold">
           {movieInfo?.title || movieInfo?.name}
         </h1>
-        <div className="">
+        <div>
           <Slider rating={movieInfo?.vote_average} clockwise={true} />
         </div>
       </div>
@@ -119,7 +116,7 @@ const MovieDetailsInfo = ({
             <HeartIcon height={30} width={30} fillColor="red" />
             <p className="font-semibold">{movieInfo?.vote_count}</p>
           </div>
-          <div>{session?.user && addToWatchlistButton()}</div>
+          <div>{session?.user && <WatchlistButton />}</div>
         </div>
       </div>
       <div className="my-4">
