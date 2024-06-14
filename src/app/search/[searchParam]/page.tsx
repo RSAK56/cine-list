@@ -1,4 +1,5 @@
 import MovieList from "@/components/movie/MovieList";
+import { Pagination } from "@nextui-org/react";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
@@ -15,6 +16,9 @@ const SearchResults = async ({ params }: any) => {
         <h1 className="text-center pt-6">No results found</h1>
       ) : null}
       {searchResultsJSON && <MovieList movieList={searchResultsJSON} />}
+      <div className="flex justify-center items-center">
+        <Pagination color="warning" initialPage={3} total={10} />
+      </div>
     </div>
   );
 };

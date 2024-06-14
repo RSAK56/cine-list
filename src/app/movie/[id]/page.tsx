@@ -1,9 +1,11 @@
-import { getServerSession } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 
 import {
   IFetchedMovieInfo,
   IProductionCompany,
 } from "@/common/interfaces/Movies.interface";
+
+import { getWatchList } from "@/app/actions";
 
 import MoviePoster from "@/components/movie/MoviePoster";
 import MovieDetailsInfo from "@/components/movie/MovieDetailsInfo";
@@ -12,13 +14,17 @@ import MovieProductionDetails from "@/components/movie/MovieProductionDetails";
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const MovieDetails = async ({ params }: any) => {
-  const session = await getServerSession();
+  const session: Session | null = await getServerSession();
+  const watchListMovieIds: number[] = await getWatchList({
+    email: session?.user?.email,
+  });
 
   const movieId = params?.id;
   const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
 
   const fetchedMovieInfo = await fetch(apiUrl);
   const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo.json();
+  const movieExistsInWatchList = watchListMovieIds?.includes(movieInfoJSON?.id);
 
   return (
     <div>
@@ -28,7 +34,11 @@ const MovieDetails = async ({ params }: any) => {
             movieInfoJSON?.backdrop_path || movieInfoJSON?.poster_path
           }
         />
-        <MovieDetailsInfo movieInfo={movieInfoJSON} session={session} />
+        <MovieDetailsInfo
+          session={session}
+          movieInfo={movieInfoJSON}
+          movieExistsInWatchList={movieExistsInWatchList}
+        />
       </div>
       <div className="p-4 my-4 max-w-6xl mx-auto">
         {movieInfoJSON?.production_companies?.length ? (

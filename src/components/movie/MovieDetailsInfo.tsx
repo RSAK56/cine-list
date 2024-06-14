@@ -1,9 +1,12 @@
 "use client";
+import { Session } from "next-auth";
+
 import { Button } from "@nextui-org/react";
 
 import { toast } from "react-hot-toast";
 
 import Slider from "../rating-meter/Slider";
+
 import { HeartIcon } from "@/components/icons/heart/Heart";
 import { AddToWatchListIcon } from "@/components/icons/add-to-watchlist/AddToWatchListIcon";
 
@@ -14,27 +17,71 @@ import {
 
 import { formatRuntime } from "@/utils/helpers";
 
+import { addMovieToWatchlist, removeMovieFromWatchlist } from "@/app/actions";
+
 const MovieDetailsInfo = ({
-  movieInfo,
   session,
+  movieInfo,
+  movieExistsInWatchList,
 }: {
+  session: Session | null;
   movieInfo: IFetchedMovieInfo;
-  session: any;
+  movieExistsInWatchList: boolean;
 }) => {
-  const addMovieToWatchlist = async () => {
-    const response = await fetch("/api/watchlist", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userEmail: session?.user?.email,
-        newMovieId: movieInfo?.id,
-      }),
-    });
-    const data = await response.json();
-    if (data) {
-      toast.success(data?.message);
+  const email = session?.user?.email;
+  const movieId = movieInfo?.id;
+
+  const handleAddMovieToWatchList = async () => {
+    if (email && movieId) {
+      const res = await addMovieToWatchlist({ email, movieId });
+      toast.success(
+        res ? "Movie added to watchlist" : "Movie already added to watchlist",
+      );
+    }
+  };
+
+  const handleRemoveMovieFromWatchList = async () => {
+    if (email && movieId) {
+      const res = await removeMovieFromWatchlist({ email, movieId });
+      toast.success(
+        res
+          ? "Movie removed from watchlist"
+          : "Unable to remove movie from watchlist",
+      );
+    }
+  };
+
+  const addToWatchlistButton = () => {
+    if (!movieExistsInWatchList) {
+      return (
+        <Button
+          color="danger"
+          variant="bordered"
+          className="h-8"
+          startContent={
+            <AddToWatchListIcon height={20} width={20} fillColor="#EAB308" />
+          }
+          onClick={handleAddMovieToWatchList}
+        >
+          Add To Watchlist
+        </Button>
+      );
+    }
+
+    if (movieExistsInWatchList) {
+      return (
+        <Button
+          color="danger"
+          variant="bordered"
+          className="h-8"
+          startContent={
+            <AddToWatchListIcon height={20} width={20} fillColor="#EAB308" />
+          }
+          onClick={handleRemoveMovieFromWatchList}
+        >
+          Remove From Watchlist
+        </Button>
+      );
     }
   };
 
@@ -72,25 +119,7 @@ const MovieDetailsInfo = ({
             <HeartIcon height={30} width={30} fillColor="red" />
             <p className="font-semibold">{movieInfo?.vote_count}</p>
           </div>
-          <div>
-            {(session?.user && (
-              <Button
-                color="danger"
-                variant="bordered"
-                className="h-8"
-                startContent={
-                  <AddToWatchListIcon
-                    height={20}
-                    width={20}
-                    fillColor="#EAB308"
-                  />
-                }
-                onClick={addMovieToWatchlist}
-              >
-                Add To Watch List
-              </Button>
-            )) || <></>}
-          </div>
+          <div>{session?.user && addToWatchlistButton()}</div>
         </div>
       </div>
       <div className="my-4">
