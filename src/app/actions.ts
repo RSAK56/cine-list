@@ -171,7 +171,7 @@ export const fetchWatchListMoviesData = async ({
 
       results.push(movieInfoJSON);
     } catch (error) {
-      console.error(`Failed to fetch movie info for ID ${movieId}:`, error);
+      throw new Error(`Failed to fetch watchlist: ${error}`);
     }
   }
 

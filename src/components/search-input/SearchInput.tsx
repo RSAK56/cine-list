@@ -17,7 +17,7 @@ const SearchInput = () => {
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push(`/search/${searchParam}?page=1`);
+    router.push(`/search/${searchParam}`);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
