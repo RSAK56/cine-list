@@ -3,10 +3,7 @@ import { NextResponse } from "next/server";
 
 import { PrismaClient } from "@prisma/client";
 
-import {
-  IMovieDetails,
-  IMovieList,
-} from "@/common/interfaces/Movies.interface";
+import { IMovieDetails, IMovieList } from "@/common/interfaces/movie.interface";
 
 const prisma = new PrismaClient();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { IMovieDetails } from "@/common/interfaces/Movies.interface";
+import { IMovieDetails } from "@/common/interfaces/movie.interface";
 import Image from "next/image";
 import { InfoIcon } from "../icons/info/InfoIcon";
 import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";

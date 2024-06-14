@@ -13,10 +13,7 @@ import { addMovieToWatchlist, removeMovieFromWatchlist } from "@/app/actions";
 import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
 import { HeartIcon } from "@/components/icons/heart/Heart";
 import { AddStar } from "@/components/icons/star/AddStar";
-import {
-  IFetchedMovieInfo,
-  IGenre,
-} from "@/common/interfaces/Movies.interface";
+import { IFetchedMovieInfo, IGenre } from "@/common/interfaces/movie.interface";
 import { RemoveStar } from "../icons/star/RemoveStar";
 
 const MovieDetailsInfo = ({

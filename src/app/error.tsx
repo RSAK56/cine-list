@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { IErrorProps } from "@/common/interfaces/Error";
+import { IErrorProps } from "@/common/interfaces/error.interface";
 
 const ErrorComponent = ({ error, reset }: IErrorProps) => {
   return (

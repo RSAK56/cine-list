@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 
 import { Button } from "@nextui-org/react";
 
-import { IUser } from "@/common/interfaces/User.interface";
+import { IUser } from "@/common/interfaces/server-user.interface";
 
 import ProfileDropdown from "../drop-down/ProfileDropdown";
 

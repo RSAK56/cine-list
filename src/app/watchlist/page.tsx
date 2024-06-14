@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 import { toast } from "react-hot-toast";
 
-import { IMovieList } from "@/common/interfaces/Movies.interface";
+import { IMovieList } from "@/common/interfaces/movie.interface";
 
 import MovieList from "@/components/movie/MovieList";
 import CustomLoader from "@/components/loader/Loader";

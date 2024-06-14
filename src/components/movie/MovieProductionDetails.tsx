@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { IProductionCompany } from "@/common/interfaces/Movies.interface";
+import { IProductionCompany } from "@/common/interfaces/movie.interface";
 
 const MovieProductionDetails = ({
   productionCompany,

@@ -1,5 +1,5 @@
 import MovieList from "@/components/movie/MovieList";
-import { IMovieList } from "@/common/interfaces/Movies.interface";
+import { IMovieList } from "@/common/interfaces/movie.interface";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 

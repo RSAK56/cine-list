@@ -1,4 +1,4 @@
-import { IUser } from "@/common/interfaces/User.interface";
+import { IUser } from "@/common/interfaces/server-user.interface";
 import {
   Avatar,
   Dropdown,

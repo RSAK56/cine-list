@@ -1,4 +1,4 @@
-import { IServerSideProps } from "@/common/interfaces/ServerSideProps.interface";
+import { IServerSideProps } from "@/common/interfaces/server-side-prop.interface";
 import MovieList from "@/components/movie/MovieList";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;

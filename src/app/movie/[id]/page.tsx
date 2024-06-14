@@ -3,14 +3,14 @@ import { Session, getServerSession } from "next-auth";
 import {
   IFetchedMovieInfo,
   IProductionCompany,
-} from "@/common/interfaces/Movies.interface";
+} from "@/common/interfaces/movie.interface";
 
 import { getWatchList } from "@/app/actions";
 
 import MoviePoster from "@/components/movie/MoviePoster";
 import MovieDetailsInfo from "@/components/movie/MovieDetailsInfo";
 import MovieProductionDetails from "@/components/movie/MovieProductionDetails";
-import { IServerSideProps } from "@/common/interfaces/ServerSideProps.interface";
+import { IServerSideProps } from "@/common/interfaces/server-side-prop.interface";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
