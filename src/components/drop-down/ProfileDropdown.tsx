@@ -10,9 +10,14 @@ import {
 interface IProfileDropdownProps {
   user: IUser | undefined;
   handleSignOut: () => void;
+  redirectToWatchList: () => void;
 }
 
-const ProfileDropdown = ({ user, handleSignOut }: IProfileDropdownProps) => {
+const ProfileDropdown = ({
+  user,
+  handleSignOut,
+  redirectToWatchList,
+}: IProfileDropdownProps) => {
   return (
     <div className="w-10 h-10 hover:cursor-pointer">
       <Dropdown placement="bottom-end">
@@ -29,7 +34,9 @@ const ProfileDropdown = ({ user, handleSignOut }: IProfileDropdownProps) => {
             <p className="font-semibold">{user?.name}</p>
             <p className="font-semibold text-amber-400">{user?.email}</p>
           </DropdownItem>
-          <DropdownItem key="analytics">WatchList</DropdownItem>
+          <DropdownItem key="analytics" onClick={redirectToWatchList}>
+            WatchList
+          </DropdownItem>
           <DropdownItem key="logout" color="danger" onClick={handleSignOut}>
             Log Out
           </DropdownItem>

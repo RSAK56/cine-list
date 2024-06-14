@@ -1,4 +1,4 @@
-export const AddToWatchListIcon = ({
+export const AddStar = ({
   fillColor,
   width,
   height,

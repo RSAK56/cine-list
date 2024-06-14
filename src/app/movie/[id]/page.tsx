@@ -1,43 +1,62 @@
-import Image from "next/image";
+import { Session, getServerSession } from "next-auth";
 
-import { IFetchedMovieInfo } from "@/common/interfaces/Movies.interface";
+import {
+  IFetchedMovieInfo,
+  IProductionCompany,
+} from "@/common/interfaces/Movies.interface";
 
-import Slider from "@/components/rating-meter/Slider";
+import { getWatchList } from "@/app/actions";
+
+import MoviePoster from "@/components/movie/MoviePoster";
+import MovieDetailsInfo from "@/components/movie/MovieDetailsInfo";
+import MovieProductionDetails from "@/components/movie/MovieProductionDetails";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const MovieDetails = async ({ params }: any) => {
+  const session: Session | null = await getServerSession();
+  const watchListMovieIds: number[] = await getWatchList({
+    email: session?.user?.email,
+  });
+
   const movieId = params?.id;
   const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
 
   const fetchedMovieInfo = await fetch(apiUrl);
   const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo.json();
+  const movieExistsInWatchList = watchListMovieIds?.includes(movieInfoJSON?.id);
 
   return (
     <div>
       <div className="p-4 md:pt-8 flex flex-col md:flex-row content-center max-w-6xl mx-auto md:space-x-6">
-        <Image
-          src={`https://image.tmdb.org/t/p/original/${
+        <MoviePoster
+          posterPath={
             movieInfoJSON?.backdrop_path || movieInfoJSON?.poster_path
-          }`}
-          alt="movie-poster"
-          width={300}
-          height={300}
-          className="sm:w-full rounded-lg"
+          }
         />
-        <div className="p-2">
-          <div className="flex flex-row gap-2 justify-start items-center mb-3">
-            <h1 className="text-lg  font-bold">
-              {movieInfoJSON?.title || movieInfoJSON?.name}
-            </h1>
-            <p>
-              {movieInfoJSON?.release_date || movieInfoJSON?.first_air_date}
-            </p>
-            <div className="">
-              <Slider rating={movieInfoJSON?.vote_average} clockwise={true} />
-            </div>
+        <MovieDetailsInfo
+          session={session}
+          movieInfo={movieInfoJSON}
+          movieExistsInWatchList={movieExistsInWatchList}
+        />
+      </div>
+      <div className="p-4 my-4 max-w-6xl mx-auto">
+        {movieInfoJSON?.production_companies?.length ? (
+          <div className="flex sm:justify-center md:justify-start">
+            <p className="text-xl font-bold">Production Companies</p>
           </div>
-          <p>{movieInfoJSON?.overview}</p>
+        ) : (
+          <></>
+        )}
+        <div className="my-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {movieInfoJSON?.production_companies?.map(
+            (productionCompany: IProductionCompany, index: number) => (
+              <MovieProductionDetails
+                productionCompany={productionCompany}
+                key={index}
+              />
+            ),
+          )}
         </div>
       </div>
     </div>

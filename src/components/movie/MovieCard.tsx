@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IMovieDetails } from "@/common/interfaces/Movies.interface";
 import Image from "next/image";
 import { InfoIcon } from "../icons/info/InfoIcon";
-import Slider from "../rating-meter/Slider";
+import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
 
 const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
   const truncatedOverview =
@@ -43,7 +43,10 @@ const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
           </div>
           <p className={`text-white text-sm`}>{truncatedOverview}</p>
           <div className="float-right">
-            <Slider rating={movie?.vote_average} clockwise={true} />
+            <CustomCircularProgressBar
+              rating={movie?.vote_average}
+              clockwise={true}
+            />
           </div>
         </div>
       </Link>
