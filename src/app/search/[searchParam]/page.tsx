@@ -1,15 +1,16 @@
+import { fetchMoviesBySearchParams } from "@/app/actions";
+
+import { IMovieList } from "@/common/interfaces/movie.interface";
 import { IServerSideProps } from "@/common/interfaces/server-side-prop.interface";
+
 import NoData from "@/components/fallbacks/NoData";
 import MovieList from "@/components/movie/MovieList";
 
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
-
 const SearchResults = async ({ params }: IServerSideProps) => {
   const searchParams = params.searchParam;
-  const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${searchParams}&language=en-US&page=1&include_adult=false`;
-
-  const fetchedSearchResults = await fetch(apiUrl);
-  const searchResultsJSON = await fetchedSearchResults.json();
+  const searchResultsJSON: IMovieList = await fetchMoviesBySearchParams({
+    searchParams,
+  });
 
   return (
     <div className="sm:mt-20">

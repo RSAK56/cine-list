@@ -1,6 +1,6 @@
-import Image from "next/image";
-
 import { IProductionCompany } from "@/common/interfaces/movie.interface";
+
+import TmdbImage from "../image/TmdbImage";
 
 const MovieProductionDetails = ({
   productionCompany,
@@ -9,9 +9,9 @@ const MovieProductionDetails = ({
 }) => (
   <div className="flex flex-row items-center justify-center">
     {productionCompany?.logo_path ? (
-      <Image
-        src={`https://image.tmdb.org/t/p/original/${productionCompany.logo_path}`}
-        alt={productionCompany.name || "production company logo"}
+      <TmdbImage
+        src={productionCompany?.logo_path}
+        alt={productionCompany?.name || "production company logo"}
         width={50}
         height={50}
       />

@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import { IMovieDetails } from "@/common/interfaces/movie.interface";
-import Image from "next/image";
+
+import TmdbImage from "../image/TmdbImage";
 import { InfoIcon } from "../icons/info/InfoIcon";
 import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
 
@@ -21,10 +22,8 @@ const MovieCard = ({ movie }: { movie: IMovieDetails }) => {
     <div className="flex justify-center items-center transition-all duration-500 relative">
       <Link href={`/movie/${movie?.id}`}>
         {/* Adding 2 paths differering by condition is due to some movies were missing poster_path value */}
-        <Image
-          src={`https://image.tmdb.org/t/p/original/${
-            movie?.poster_path || movie?.backdrop_path
-          }`}
+        <TmdbImage
+          src={movie?.poster_path || movie?.backdrop_path}
           alt="movie-poster"
           width={276}
           height={414}

@@ -12,6 +12,7 @@ import {
   IMovieDetails,
   IMovieList,
 } from "@/common/interfaces/movie.interface";
+import { generateApiUrl } from "@/utils/helpers";
 
 const prisma = new PrismaClient();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -234,7 +235,7 @@ export const fetchWatchListMoviesData = async ({
 
   for (const movieId of watchListMovieIds) {
     try {
-      const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+      const apiUrl = generateApiUrl(`/movie/${movieId}`, TMDB_API_KEY);
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -252,20 +253,52 @@ export const fetchWatchListMoviesData = async ({
   return { results };
 };
 
-// Movie
 export const fetchMovieDetails = async ({
   movieId,
 }: {
   movieId: string | string[] | undefined;
 }): Promise<IFetchedMovieInfo> => {
   try {
-    const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
-
-    // Fetch the movie info
+    const apiUrl = generateApiUrl(`/movie/${movieId}`, TMDB_API_KEY);
     const fetchedMovieInfo = await fetch(apiUrl);
     const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo.json();
     return movieInfoJSON;
   } catch (error) {
     throw new Error(`Failed to fetch movie: ${error}`);
+  }
+};
+
+export const fetchMoviesByCategory = async ({
+  category,
+}: {
+  category: string;
+}): Promise<IMovieList> => {
+  try {
+    const endpoint =
+      category === "trending" ? "/trending/all/week" : "/movie/top_rated";
+    const apiUrl = generateApiUrl(endpoint, TMDB_API_KEY);
+    const fetchMovies = await fetch(apiUrl);
+    let fetchedMoviesJSON: IMovieList = await fetchMovies.json();
+    return fetchedMoviesJSON;
+  } catch (error) {
+    throw new Error(`Failed to fetch movies: ${error}`);
+  }
+};
+
+export const fetchMoviesBySearchParams = async ({
+  searchParams,
+}: {
+  searchParams: string;
+}): Promise<IMovieList> => {
+  try {
+    const apiUrl = generateApiUrl("/search/movie", TMDB_API_KEY, {
+      query: searchParams,
+      include_adult: false,
+    });
+    const fetchedSearchResults = await fetch(apiUrl);
+    const searchResultsJSON: IMovieList = await fetchedSearchResults.json();
+    return searchResultsJSON;
+  } catch (error) {
+    throw new Error(`Failed to search movies: ${error}`);
   }
 };

@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
+
+import { toast } from "react-hot-toast";
 
 import {
   IFetchedMovieInfo,
@@ -14,7 +18,6 @@ import MoviePoster from "@/components/movie/MoviePoster";
 import MovieDetailsInfo from "@/components/movie/MovieDetailsInfo";
 import MovieProductionDetails from "@/components/movie/MovieProductionDetails";
 import CustomLoader from "@/components/loader/Loader";
-import { useParams } from "next/navigation";
 
 const MovieDetails = () => {
   const { data: session } = useSession();
@@ -30,27 +33,23 @@ const MovieDetails = () => {
       setLoading(true);
       const email = session?.user?.email;
 
-      if (email && movieId) {
-        let emailPromise = getWatchList({ email });
-        let movieInfoPromise = fetchMovieDetails({ movieId });
+      // Fetch watch list if user is logged in
+      let emailPromise = email ? getWatchList({ email }) : Promise.resolve([]);
+      let movieInfoPromise = fetchMovieDetails({ movieId });
 
-        Promise.all([emailPromise, movieInfoPromise])
-          .then(([watchList, movieInfoJSON]) => {
-            const watchListIds = Array.isArray(watchList) ? watchList : [];
-            setMovieInfo(movieInfoJSON);
-            const movieInWatchList = watchListIds.includes(
-              JSON.parse(movieId) || 0,
-            );
-            setMovieExistsInWatchList(movieInWatchList);
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-            // Handle error gracefully, e.g., show error message or redirect
-          })
-          .finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
+      Promise.all([emailPromise, movieInfoPromise])
+        .then(([watchList, movieInfoJSON]) => {
+          const watchListIds = Array.isArray(watchList) ? watchList : [];
+          setMovieInfo(movieInfoJSON);
+          const movieInWatchList = watchListIds.includes(
+            JSON.parse(movieId) || 0,
+          );
+          setMovieExistsInWatchList(movieInWatchList);
+        })
+        .catch((error) => {
+          toast.error(`Error fetching data: ${error}`);
+        })
+        .finally(() => setLoading(false));
     };
 
     fetchData();
@@ -67,7 +66,7 @@ const MovieDetails = () => {
           <NoData
             containerClassNames="flex flex-col items-center"
             title="Movie Has Broken Details!"
-            message="Watch this article later"
+            message="Watch this movie later"
             titleClassName="font-bold text-xl"
             messageClassName="font-semibold text-lg"
             childImageContainerClassName="flex flex-row justify-center items-center gap-2"

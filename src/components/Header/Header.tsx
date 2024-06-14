@@ -1,4 +1,4 @@
-import Logo from "../logo/Logo";
+import Logo from "../image/Logo";
 import HeaderItem from "./HeaderItem";
 import SearchInput from "../search-input/SearchInput";
 import ThemeToggle from "../theme-toggle/ThemeToggle";

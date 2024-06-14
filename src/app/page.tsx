@@ -1,8 +1,7 @@
 import MovieList from "@/components/movie/MovieList";
 import { IMovieList } from "@/common/interfaces/movie.interface";
 import NoData from "@/components/fallbacks/NoData";
-
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
+import { fetchMoviesByCategory } from "./actions";
 
 interface HomeProps {
   searchParams: {
@@ -12,25 +11,14 @@ interface HomeProps {
 
 const Home = async ({ searchParams }: HomeProps) => {
   const category = searchParams.category || "trending";
-  const apiUrl = `https://api.themoviedb.org/3${
-    category === "trending" ? "/trending/all/week" : "/movie/top_rated"
-  }?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
 
-  const fetchMovies = await fetch(apiUrl, { next: { revalidate: 360000 } });
-
-  if (!fetchMovies.ok) {
-    throw new Error(
-      `Could not fetch movies. HTTP status: ${fetchMovies.status}`,
-    );
-  }
-
-  let fetchedMoviesJSON: IMovieList = await fetchMovies.json();
+  let movieList: IMovieList = await fetchMoviesByCategory({ category });
 
   return (
     <>
-      {fetchedMoviesJSON?.results?.length ? (
+      {movieList?.results?.length ? (
         <div className="sm:mt-20">
-          <MovieList movieList={fetchedMoviesJSON} />
+          <MovieList movieList={movieList} />
         </div>
       ) : (
         <div className="flex justify-center mt-80">
