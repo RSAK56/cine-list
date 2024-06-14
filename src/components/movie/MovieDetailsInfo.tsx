@@ -1,7 +1,7 @@
 "use client";
 import { Session } from "next-auth";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { toast } from "react-hot-toast";
 
@@ -23,16 +23,15 @@ const MovieDetailsInfo = ({
   session,
   movieInfo,
   movieExistsInWatchList,
+  setMovieExistsInWatchList,
 }: {
   session: Session | null;
   movieInfo: IFetchedMovieInfo;
   movieExistsInWatchList: boolean;
+  setMovieExistsInWatchList: Dispatch<SetStateAction<boolean>>;
 }) => {
   const email = session?.user?.email;
   const movieId = movieInfo?.id;
-  const [isMovieInWatchlist, setIsMovieInWatchlist] = useState<boolean>(
-    movieExistsInWatchList,
-  );
 
   const handleWatchlistChange = async (action: "add" | "remove") => {
     if (email && movieId) {
@@ -42,7 +41,7 @@ const MovieDetailsInfo = ({
           : await removeMovieFromWatchlist({ email, movieId });
 
       if (res) {
-        setIsMovieInWatchlist(action === "add");
+        setMovieExistsInWatchList(action === "add");
         toast.success(
           action === "add"
             ? "Movie added to watchlist"
@@ -59,11 +58,11 @@ const MovieDetailsInfo = ({
   };
 
   const WatchlistButton = () => {
-    const buttonText = isMovieInWatchlist
+    const buttonText = movieExistsInWatchList
       ? "Remove From Watchlist"
       : "Add To Watchlist";
     const handleClick = () =>
-      handleWatchlistChange(isMovieInWatchlist ? "remove" : "add");
+      handleWatchlistChange(movieExistsInWatchList ? "remove" : "add");
     return (
       <CustomIconButton
         color="danger"
@@ -74,7 +73,7 @@ const MovieDetailsInfo = ({
         iconFillColor="#EAB308"
         buttonClassName="h-8"
         StartContentIcon={(props: TButtonIconProps) =>
-          isMovieInWatchlist ? (
+          movieExistsInWatchList ? (
             <RemoveStar {...props} />
           ) : (
             <AddStar {...props} />

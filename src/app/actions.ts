@@ -7,7 +7,11 @@ import { Account, Profile, User } from "next-auth";
 
 import { PrismaClient } from "@prisma/client";
 
-import { IMovieDetails, IMovieList } from "@/common/interfaces/movie.interface";
+import {
+  IFetchedMovieInfo,
+  IMovieDetails,
+  IMovieList,
+} from "@/common/interfaces/movie.interface";
 
 const prisma = new PrismaClient();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -246,4 +250,22 @@ export const fetchWatchListMoviesData = async ({
   }
 
   return { results };
+};
+
+// Movie
+export const fetchMovieDetails = async ({
+  movieId,
+}: {
+  movieId: string | string[] | undefined;
+}): Promise<IFetchedMovieInfo> => {
+  try {
+    const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+
+    // Fetch the movie info
+    const fetchedMovieInfo = await fetch(apiUrl);
+    const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo.json();
+    return movieInfoJSON;
+  } catch (error) {
+    throw new Error(`Failed to fetch movie: ${error}`);
+  }
 };

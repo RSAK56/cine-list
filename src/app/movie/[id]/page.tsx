@@ -1,72 +1,116 @@
-import { Session, getServerSession } from "next-auth";
+"use client";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import {
   IFetchedMovieInfo,
   IProductionCompany,
 } from "@/common/interfaces/movie.interface";
 
-import { getWatchList } from "@/app/actions";
+import { fetchMovieDetails, getWatchList } from "@/app/actions";
 
+import NoData from "@/components/fallbacks/NoData";
 import MoviePoster from "@/components/movie/MoviePoster";
 import MovieDetailsInfo from "@/components/movie/MovieDetailsInfo";
 import MovieProductionDetails from "@/components/movie/MovieProductionDetails";
-import { IServerSideProps } from "@/common/interfaces/server-side-prop.interface";
+import CustomLoader from "@/components/loader/Loader";
+import { useParams } from "next/navigation";
 
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const MovieDetails = () => {
+  const { data: session } = useSession();
+  const { id: movieId }: { id: string } = useParams();
 
-const MovieDetails = async ({ params }: IServerSideProps) => {
-  const session: Session | null = await getServerSession();
+  const [loading, setLoading] = useState(true);
+  const [movieInfo, setMovieInfo] = useState<IFetchedMovieInfo | null>(null);
+  const [movieExistsInWatchList, setMovieExistsInWatchList] =
+    useState<boolean>(false);
 
-  const fetchedWatchList = await getWatchList({
-    email: session?.user?.email,
-  });
-  const watchListMovieIds: number[] = Array.isArray(fetchedWatchList)
-    ? fetchedWatchList
-    : [];
+  useEffect(() => {
+    const fetchData = async () => {
+      const email = session?.user?.email;
 
-  const movieId = params?.id;
-  const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+      if (email) {
+        // Fetch the watchlist
+        const fetchedWatchList = await getWatchList({ email });
+        const watchListIds = Array.isArray(fetchedWatchList)
+          ? fetchedWatchList
+          : [];
 
-  const fetchedMovieInfo = await fetch(apiUrl);
-  const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo?.json();
+        // Fetch the movie details
+        const movieInfoJSON: IFetchedMovieInfo = await fetchMovieDetails({
+          movieId,
+        });
 
-  const movieExistsInWatchList = watchListMovieIds?.includes(movieInfoJSON?.id);
+        setMovieInfo(movieInfoJSON);
 
-  console.log("movieInfoJSON", movieInfoJSON);
+        const movieInWatchList = watchListIds?.includes(
+          JSON.parse(movieId) || 0,
+        );
+        setMovieExistsInWatchList(movieInWatchList);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <CustomLoader />;
+  }
+
   return (
-    <div>
-      <div className="p-4 md:pt-8 flex flex-col md:flex-row content-center max-w-6xl mx-auto md:space-x-6">
-        <MoviePoster
-          posterPath={
-            movieInfoJSON?.backdrop_path || movieInfoJSON?.poster_path
-          }
-        />
-        <MovieDetailsInfo
-          session={session}
-          movieInfo={movieInfoJSON}
-          movieExistsInWatchList={movieExistsInWatchList}
-        />
-      </div>
-      <div className="p-4 my-4 max-w-6xl mx-auto">
-        {movieInfoJSON?.production_companies?.length ? (
-          <div className="flex sm:justify-center md:justify-start">
-            <p className="text-xl font-bold">Production Companies</p>
-          </div>
-        ) : (
-          <></>
-        )}
-        <div className="my-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {movieInfoJSON?.production_companies?.map(
-            (productionCompany: IProductionCompany, index: number) => (
-              <MovieProductionDetails
-                productionCompany={productionCompany}
-                key={index}
-              />
-            ),
-          )}
+    <>
+      {!movieInfo?.status ? (
+        <div className="flex justify-center mt-80">
+          <NoData
+            containerClassNames="flex flex-col items-center"
+            title="Movie Has Broken Details!"
+            message="Watch this article later"
+            titleClassName="font-bold text-xl"
+            messageClassName="font-semibold text-lg"
+            childImageContainerClassName="flex flex-row justify-center items-center gap-2"
+            showImage={true}
+            imageURL="/png/popcorn-stop.png"
+            imageWidth={120}
+            imageHeight={120}
+            altText="no-data-image"
+          >
+            <></>
+          </NoData>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div>
+          <div className="p-4 md:pt-8 flex flex-col md:flex-row content-center max-w-6xl mx-auto md:space-x-6">
+            <MoviePoster
+              posterPath={movieInfo.backdrop_path || movieInfo.poster_path}
+            />
+            <MovieDetailsInfo
+              session={session}
+              movieInfo={movieInfo}
+              movieExistsInWatchList={movieExistsInWatchList}
+              setMovieExistsInWatchList={setMovieExistsInWatchList}
+            />
+          </div>
+          <div className="p-4 my-4 max-w-6xl mx-auto">
+            {movieInfo.production_companies?.length ? (
+              <div className="flex sm:justify-center md:justify-start">
+                <p className="text-xl font-bold">Production Companies</p>
+              </div>
+            ) : null}
+            <div className="my-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {movieInfo.production_companies?.map(
+                (productionCompany: IProductionCompany, index: number) => (
+                  <MovieProductionDetails
+                    productionCompany={productionCompany}
+                    key={index}
+                  />
+                ),
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

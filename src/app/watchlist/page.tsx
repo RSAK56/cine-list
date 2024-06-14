@@ -2,13 +2,10 @@
 import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 
 import { toast } from "react-hot-toast";
-
-import { TButtonIconProps } from "@/common/types/button.types";
-
-import { fetchWatchListMoviesData, getWatchList } from "@/app/actions";
 
 import { IMovieList } from "@/common/interfaces/movie.interface";
 
@@ -16,18 +13,17 @@ import NoData from "@/components/fallbacks/NoData";
 import MovieList from "@/components/movie/MovieList";
 import CustomLoader from "@/components/loader/Loader";
 import { MovieIcon } from "@/components/icons/movie/MovieIcon";
+
+import { fetchWatchListMoviesData, getWatchList } from "@/app/actions";
 import CustomIconButton from "@/components/button/CustomIconButton";
+import { TButtonIconProps } from "@/common/types/button.types";
 
 const WatchList = () => {
   const router = useRouter();
-
   const { data: session } = useSession();
-
   const [movieList, setMovieList] = useState<IMovieList | null>(null);
-
   const [isWatchListLoading, setIsWatchListLoading] = useState<boolean>(false);
 
-  // Initial watchlist data fetching
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,38 +37,31 @@ const WatchList = () => {
           });
           setMovieList(fetchedMovieList);
         }
-      } catch (error) {
-        toast.error(`Unable to fetch watchlist`);
-      } finally {
         setIsWatchListLoading(false);
+      } catch (error) {
+        setIsWatchListLoading(false);
+        toast.error(`Unable to fetch watchlist`);
       }
     };
 
-    if (session) {
-      fetchData();
-    }
+    fetchData();
   }, [session]);
 
   const redirectToHome = () => {
     router.push("/");
   };
 
-  const renderContent = () => {
-    if (isWatchListLoading) {
-      // Display loader component
-      return <CustomLoader />;
-    } else if (movieList && movieList.results && movieList.results.length > 0) {
-      // Display the movie list
-      return (
+  return (
+    <>
+      {isWatchListLoading ? (
+        <CustomLoader />
+      ) : movieList?.results?.length ? (
         <div className="sm:mt-20">
           <MovieList movieList={movieList} />
         </div>
-      );
-    } else {
-      // Check if movieList has been fetched
-      return (
-        <div className="flex justify-center mt-80">
-          {movieList !== null && (
+      ) : (
+        movieList !== null && (
+          <div className="flex justify-center mt-80">
             <NoData
               containerClassNames="flex flex-col items-center"
               title="No Movies Here!"
@@ -100,13 +89,11 @@ const WatchList = () => {
                 onClickHandler={redirectToHome}
               />
             </NoData>
-          )}
-        </div>
-      );
-    }
-  };
-
-  return <>{renderContent()}</>;
+          </div>
+        )
+      )}
+    </>
+  );
 };
 
 export default WatchList;
