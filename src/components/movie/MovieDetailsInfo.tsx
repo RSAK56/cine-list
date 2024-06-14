@@ -1,6 +1,5 @@
 "use client";
 import { Session } from "next-auth";
-import { Button } from "@nextui-org/react";
 
 import { useState } from "react";
 
@@ -10,11 +9,15 @@ import { formatRuntime } from "@/utils/helpers";
 
 import { addMovieToWatchlist, removeMovieFromWatchlist } from "@/app/actions";
 
-import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
-import { HeartIcon } from "@/components/icons/heart/Heart";
-import { AddStar } from "@/components/icons/star/AddStar";
-import { IFetchedMovieInfo, IGenre } from "@/common/interfaces/movie.interface";
+import { TButtonIconProps } from "@/common/types/button.types";
+
+import CustomIconButton from "../button/CustomIconButton";
 import { RemoveStar } from "../icons/star/RemoveStar";
+
+import { AddStar } from "@/components/icons/star/AddStar";
+import { HeartIcon } from "@/components/icons/heart/Heart";
+import { IFetchedMovieInfo, IGenre } from "@/common/interfaces/movie.interface";
+import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
 
 const MovieDetailsInfo = ({
   session,
@@ -61,21 +64,24 @@ const MovieDetailsInfo = ({
       : "Add To Watchlist";
     const handleClick = () =>
       handleWatchlistChange(isMovieInWatchlist ? "remove" : "add");
-    const icon = isMovieInWatchlist ? (
-      <RemoveStar height={20} width={20} fillColor="#EAB308" />
-    ) : (
-      <AddStar height={20} width={20} fillColor="#EAB308" />
-    );
     return (
-      <Button
+      <CustomIconButton
         color="danger"
         variant="bordered"
-        className="h-8"
-        startContent={icon}
-        onClick={handleClick}
-      >
-        {buttonText}
-      </Button>
+        text={buttonText}
+        iconHeight={20}
+        iconWidth={20}
+        iconFillColor="#EAB308"
+        buttonClassName="h-8"
+        StartContentIcon={(props: TButtonIconProps) =>
+          isMovieInWatchlist ? (
+            <RemoveStar {...props} />
+          ) : (
+            <AddStar {...props} />
+          )
+        }
+        onClickHandler={handleClick}
+      />
     );
   };
 

@@ -9,7 +9,7 @@ const ErrorComponent = ({ error, reset }: IErrorProps) => {
     <div className="flex flex-col justify-center items-center min-h-screen">
       <div className="flex flex-col justify-center items-center flex-grow gap-4">
         <Image
-          alt="logo"
+          alt="something-went-wrong"
           src="/png/popcorn-slip.png"
           width={120}
           height={120}
