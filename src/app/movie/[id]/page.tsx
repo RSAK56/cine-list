@@ -26,33 +26,35 @@ const MovieDetails = () => {
     useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
+      setLoading(true);
       const email = session?.user?.email;
 
-      if (email) {
-        // Fetch the watchlist
-        const fetchedWatchList = await getWatchList({ email });
-        const watchListIds = Array.isArray(fetchedWatchList)
-          ? fetchedWatchList
-          : [];
+      if (email && movieId) {
+        let emailPromise = getWatchList({ email });
+        let movieInfoPromise = fetchMovieDetails({ movieId });
 
-        // Fetch the movie details
-        const movieInfoJSON: IFetchedMovieInfo = await fetchMovieDetails({
-          movieId,
-        });
-
-        setMovieInfo(movieInfoJSON);
-
-        const movieInWatchList = watchListIds?.includes(
-          JSON.parse(movieId) || 0,
-        );
-        setMovieExistsInWatchList(movieInWatchList);
+        Promise.all([emailPromise, movieInfoPromise])
+          .then(([watchList, movieInfoJSON]) => {
+            const watchListIds = Array.isArray(watchList) ? watchList : [];
+            setMovieInfo(movieInfoJSON);
+            const movieInWatchList = watchListIds.includes(
+              JSON.parse(movieId) || 0,
+            );
+            setMovieExistsInWatchList(movieInWatchList);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            // Handle error gracefully, e.g., show error message or redirect
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [session, movieId]);
 
   if (loading) {
     return <CustomLoader />;

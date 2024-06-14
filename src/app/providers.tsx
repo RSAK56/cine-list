@@ -12,10 +12,7 @@ interface IProvidersProps {
   session: NextAuthSession | null;
 }
 
-export default async function Providers({
-  children,
-  session,
-}: IProvidersProps) {
+const Providers = ({ children, session }: IProvidersProps) => {
   return (
     <SessionProvider session={session}>
       <NextUIProvider>
@@ -29,4 +26,6 @@ export default async function Providers({
       </NextUIProvider>
     </SessionProvider>
   );
-}
+};
+
+export default Providers;

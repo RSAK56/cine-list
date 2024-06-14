@@ -1,7 +1,6 @@
-"use client";
 import { Session } from "next-auth";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { toast } from "react-hot-toast";
 
