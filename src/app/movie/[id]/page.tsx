@@ -32,6 +32,7 @@ const MovieDetails = async ({ params }: IServerSideProps) => {
 
   const movieExistsInWatchList = watchListMovieIds?.includes(movieInfoJSON?.id);
 
+  console.log("movieInfoJSON", movieInfoJSON);
   return (
     <div>
       <div className="p-4 md:pt-8 flex flex-col md:flex-row content-center max-w-6xl mx-auto md:space-x-6">
