@@ -1,10 +1,17 @@
 "use server";
-
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+import { PrismaClient } from "@prisma/client";
 
+import {
+  IMovieDetails,
+  IMovieList,
+} from "@/common/interfaces/Movies.interface";
+
+const prisma = new PrismaClient();
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
+
+// Watchlist
 export const addMovieToWatchlist = async ({
   email,
   movieId,
@@ -142,4 +149,31 @@ export const removeMovieFromWatchlist = async ({
       { status: 404 },
     );
   }
+};
+
+export const fetchWatchListMoviesData = async ({
+  watchListMovieIds,
+}: {
+  watchListMovieIds: number[];
+}): Promise<IMovieList> => {
+  const results: IMovieDetails[] = [];
+
+  for (const movieId of watchListMovieIds) {
+    try {
+      const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+      const response = await fetch(apiUrl);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch movie info`);
+      }
+
+      const movieInfoJSON: IMovieDetails = await response.json();
+
+      results.push(movieInfoJSON);
+    } catch (error) {
+      console.error(`Failed to fetch movie info for ID ${movieId}:`, error);
+    }
+  }
+
+  return { results };
 };
