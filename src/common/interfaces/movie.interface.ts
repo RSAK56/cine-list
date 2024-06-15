@@ -60,6 +60,13 @@ export interface ISpokenLanguage {
   name: string;
 }
 
+// Interface for no movie data response
+export interface INoMovieDataFetchedResponse {
+  success: boolean;
+  staus_code: number;
+  status_message: string;
+}
+
 // Interface for the main fetched movie info JSON structure
 export interface IFetchedMovieInfo {
   adult: boolean;

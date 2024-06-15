@@ -3,11 +3,10 @@
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
-import { Button } from "@nextui-org/react";
-
-import { IUser } from "@/common/interfaces/User.interface";
+import { IUser } from "@/common/interfaces/server-user.interface";
 
 import ProfileDropdown from "../drop-down/ProfileDropdown";
+import CustomBasicFilledButton from "./CustomBasicFilledButton";
 
 const AuthButtons = () => {
   const router = useRouter();
@@ -22,13 +21,12 @@ const AuthButtons = () => {
   };
 
   const LoginButton = () => (
-    <Button
+    <CustomBasicFilledButton
       size="sm"
-      className="text-white bg-yellow-500"
-      onClick={() => redirectTo("/api/auth/signin")}
-    >
-      Login
-    </Button>
+      buttonClassName="text-white bg-amber-500"
+      onClickHandler={() => redirectTo("/api/auth/signin")}
+      text="Login"
+    />
   );
 
   const AuthenticatedButtons = ({ user }: { user: IUser | undefined }) => (
@@ -41,7 +39,11 @@ const AuthButtons = () => {
 
   return (
     <div className="flex justify-center items-center gap-2">
-      {session ? <AuthenticatedButtons user={session.user} /> : <LoginButton />}
+      {session ? (
+        <AuthenticatedButtons user={session?.user} />
+      ) : (
+        <LoginButton />
+      )}
     </div>
   );
 };

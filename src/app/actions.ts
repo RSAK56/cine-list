@@ -1,15 +1,90 @@
 "use server";
 import { NextResponse } from "next/server";
 
+import { AdapterUser } from "next-auth/adapters";
+
+import { Account, Profile, User } from "next-auth";
+
 import { PrismaClient } from "@prisma/client";
 
 import {
+  IFetchedMovieInfo,
   IMovieDetails,
   IMovieList,
-} from "@/common/interfaces/Movies.interface";
+} from "@/common/interfaces/movie.interface";
+import { generateApiUrl } from "@/utils/helpers";
 
 const prisma = new PrismaClient();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+
+// User
+export const createUser = async (
+  email: string | null | undefined,
+  name: string,
+  image: string,
+) => {
+  try {
+    // Create new user in the database
+    let newUser;
+    if (email && name && image) {
+      newUser = await prisma.user.create({
+        data: {
+          email,
+          name,
+          image,
+        },
+      });
+    }
+
+    if (newUser) {
+      // Create an empty watch list for new user
+      await prisma.watchList.create({
+        data: {
+          userId: newUser.id,
+          movieIds: "[]",
+        },
+      });
+      return newUser;
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { message: "An error has occured while creating a new user!" },
+      { status: 404 },
+    );
+  }
+};
+
+// Auth
+export async function signIn({
+  user,
+  account,
+  profile,
+}: {
+  user: User | AdapterUser;
+  account: Account | null;
+  profile?: Profile | undefined;
+  email?: { verificationRequest?: boolean | undefined } | undefined;
+  credentials?: Record<string, any> | undefined;
+}): Promise<boolean> {
+  try {
+    const email = user?.email;
+    const name = user?.name || profile?.name || "";
+    const image = user?.image || profile?.image || "";
+
+    // Check if the user already exists in your database
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email || undefined },
+    });
+
+    if (!existingUser) {
+      await createUser(email, name, image);
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 // Watchlist
 export const addMovieToWatchlist = async ({
@@ -133,7 +208,7 @@ export const removeMovieFromWatchlist = async ({
     if (watchList) {
       let movieIds = JSON.parse(watchList.movieIds);
 
-      movieIds = movieIds.filter((id: any) => id !== movieId);
+      movieIds = movieIds?.filter((id: number) => id !== movieId);
 
       watchList = await prisma.watchList.update({
         where: { userId: user?.id },
@@ -160,7 +235,7 @@ export const fetchWatchListMoviesData = async ({
 
   for (const movieId of watchListMovieIds) {
     try {
-      const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+      const apiUrl = generateApiUrl(`/movie/${movieId}`, TMDB_API_KEY);
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -176,4 +251,54 @@ export const fetchWatchListMoviesData = async ({
   }
 
   return { results };
+};
+
+export const fetchMovieDetails = async ({
+  movieId,
+}: {
+  movieId: string | string[] | undefined;
+}): Promise<IFetchedMovieInfo> => {
+  try {
+    const apiUrl = generateApiUrl(`/movie/${movieId}`, TMDB_API_KEY);
+    const fetchedMovieInfo = await fetch(apiUrl);
+    const movieInfoJSON: IFetchedMovieInfo = await fetchedMovieInfo.json();
+    return movieInfoJSON;
+  } catch (error) {
+    throw new Error(`Failed to fetch movie: ${error}`);
+  }
+};
+
+export const fetchMoviesByCategory = async ({
+  category,
+}: {
+  category: string;
+}): Promise<IMovieList> => {
+  try {
+    const endpoint =
+      category === "trending" ? "/trending/all/week" : "/movie/top_rated";
+    const apiUrl = generateApiUrl(endpoint, TMDB_API_KEY);
+    const fetchMovies = await fetch(apiUrl);
+    let fetchedMoviesJSON: IMovieList = await fetchMovies.json();
+    return fetchedMoviesJSON;
+  } catch (error) {
+    throw new Error(`Failed to fetch movies: ${error}`);
+  }
+};
+
+export const fetchMoviesBySearchParams = async ({
+  searchParams,
+}: {
+  searchParams: string;
+}): Promise<IMovieList> => {
+  try {
+    const apiUrl = generateApiUrl("/search/movie", TMDB_API_KEY, {
+      query: searchParams,
+      include_adult: false,
+    });
+    const fetchedSearchResults = await fetch(apiUrl);
+    const searchResultsJSON: IMovieList = await fetchedSearchResults.json();
+    return searchResultsJSON;
+  } catch (error) {
+    throw new Error(`Failed to search movies: ${error}`);
+  }
 };

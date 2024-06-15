@@ -14,3 +14,19 @@ export const formatRuntime = (minutes: number) => {
 
   return `${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`;
 };
+
+export const generateApiUrl = (
+  endpoint: string,
+  TMDB_API_KEY: string | undefined,
+  params?: Record<string, any>,
+) => {
+  let url = `https://api.themoviedb.org/3${endpoint}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+
+  if (params) {
+    Object.keys(params).forEach((key) => {
+      url += `&${key}=${params[key]}`;
+    });
+  }
+
+  return url;
+};

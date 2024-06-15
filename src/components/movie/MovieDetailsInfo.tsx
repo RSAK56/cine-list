@@ -1,8 +1,6 @@
-"use client";
 import { Session } from "next-auth";
-import { Button } from "@nextui-org/react";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { toast } from "react-hot-toast";
 
@@ -10,29 +8,29 @@ import { formatRuntime } from "@/utils/helpers";
 
 import { addMovieToWatchlist, removeMovieFromWatchlist } from "@/app/actions";
 
-import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
-import { HeartIcon } from "@/components/icons/heart/Heart";
-import { AddStar } from "@/components/icons/star/AddStar";
-import {
-  IFetchedMovieInfo,
-  IGenre,
-} from "@/common/interfaces/Movies.interface";
+import { TButtonIconProps } from "@/common/types/button.types";
+
+import CustomIconButton from "../button/CustomIconButton";
 import { RemoveStar } from "../icons/star/RemoveStar";
+
+import { AddStar } from "@/components/icons/star/AddStar";
+import { HeartIcon } from "@/components/icons/heart/Heart";
+import { IFetchedMovieInfo, IGenre } from "@/common/interfaces/movie.interface";
+import CustomCircularProgressBar from "../progressbar/CustomCircularProgressBar";
 
 const MovieDetailsInfo = ({
   session,
   movieInfo,
   movieExistsInWatchList,
+  setMovieExistsInWatchList,
 }: {
   session: Session | null;
   movieInfo: IFetchedMovieInfo;
   movieExistsInWatchList: boolean;
+  setMovieExistsInWatchList: Dispatch<SetStateAction<boolean>>;
 }) => {
   const email = session?.user?.email;
   const movieId = movieInfo?.id;
-  const [isMovieInWatchlist, setIsMovieInWatchlist] = useState<boolean>(
-    movieExistsInWatchList,
-  );
 
   const handleWatchlistChange = async (action: "add" | "remove") => {
     if (email && movieId) {
@@ -42,7 +40,7 @@ const MovieDetailsInfo = ({
           : await removeMovieFromWatchlist({ email, movieId });
 
       if (res) {
-        setIsMovieInWatchlist(action === "add");
+        setMovieExistsInWatchList(action === "add");
         toast.success(
           action === "add"
             ? "Movie added to watchlist"
@@ -59,26 +57,29 @@ const MovieDetailsInfo = ({
   };
 
   const WatchlistButton = () => {
-    const buttonText = isMovieInWatchlist
+    const buttonText = movieExistsInWatchList
       ? "Remove From Watchlist"
       : "Add To Watchlist";
     const handleClick = () =>
-      handleWatchlistChange(isMovieInWatchlist ? "remove" : "add");
-    const icon = isMovieInWatchlist ? (
-      <RemoveStar height={20} width={20} fillColor="#EAB308" />
-    ) : (
-      <AddStar height={20} width={20} fillColor="#EAB308" />
-    );
+      handleWatchlistChange(movieExistsInWatchList ? "remove" : "add");
     return (
-      <Button
+      <CustomIconButton
         color="danger"
         variant="bordered"
-        className="h-8"
-        startContent={icon}
-        onClick={handleClick}
-      >
-        {buttonText}
-      </Button>
+        text={buttonText}
+        iconHeight={20}
+        iconWidth={20}
+        iconFillColor="#EAB308"
+        buttonClassName="h-8"
+        StartContentIcon={(props: TButtonIconProps) =>
+          movieExistsInWatchList ? (
+            <RemoveStar {...props} />
+          ) : (
+            <AddStar {...props} />
+          )
+        }
+        onClickHandler={handleClick}
+      />
     );
   };
 
@@ -89,10 +90,7 @@ const MovieDetailsInfo = ({
           {movieInfo?.title || movieInfo?.name}
         </h1>
         <div>
-          <CustomCircularProgressBar
-            rating={movieInfo?.vote_average}
-            clockwise={true}
-          />
+          <CustomCircularProgressBar rating={movieInfo?.vote_average} />
         </div>
       </div>
       <div className="flex flex-col justify-center items-start">

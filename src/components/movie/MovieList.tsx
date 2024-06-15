@@ -1,7 +1,4 @@
-import {
-  IMovieDetails,
-  IMovieList,
-} from "@/common/interfaces/Movies.interface";
+import { IMovieDetails, IMovieList } from "@/common/interfaces/movie.interface";
 import MovieCard from "./MovieCard";
 
 const MovieList = ({ movieList }: { movieList: IMovieList | null }) => {

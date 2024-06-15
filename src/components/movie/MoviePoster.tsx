@@ -1,8 +1,8 @@
-import Image from "next/image";
+import TmdbImage from "../image/TmdbImage";
 
 const MoviePoster = ({ posterPath }: { posterPath: string }) => (
-  <Image
-    src={`https://image.tmdb.org/t/p/original/${posterPath}`}
+  <TmdbImage
+    src={posterPath}
     alt="movie-poster"
     width={300}
     height={300}
