@@ -20,9 +20,44 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Tailwind CSS
+
+This project uses Tailwind CSS base properties as class names for the tags to apply styles.
+
+Tailwind CSS is a utility-first CSS framework that allows you to write more concise and maintainable code by using pre-defined classes to style your HTML elements.
+
+In this project, Tailwind CSS is used to apply styles to HTML elements by adding class names to the elements. For example, to add a background color to a div element, you can add the class bg-red-500 to the element:
+
+```
+<!-- Add a background color -->
+<div class="bg-red-500">This div has a red background</div>
+
+<!-- Add a text color -->
+<p class="text-blue-600">This text is blue</p>
+
+<!-- Add a font size -->
+<h1 class="text-3xl">This heading is large</h1>
+
+<!-- Add a margin -->
+<div class="mx-4">This div has a margin of 4px on the x-axis</div>
+
+<!-- Add a padding -->
+<div class="px-6">This div has a padding of 6px on the x-axis</div>
+
+<!-- Add a border -->
+<div class="border border-gray-200">This div has a gray border</div>
+
+<!-- Add a responsive design class -->
+<div class="bg-red-500 lg:bg-blue-500">This div has a red background on small screens and a blue background on large screens</div>
+```
+
+These are just a few examples of the many utility classes that Tailwind provides.
+
+We can configure custom classes and plugins inside applications root directory `tailwind.config.js` file.
+
 ## TMDB API Key
 
-This project uses TMDB for fetching and movies.
+This project uses TMDB for fetching movies.
 
 You can log into [TMDB](https://www.themoviedb.org/login) to create and account and get your API key.
 
@@ -47,13 +82,13 @@ src
 └── routes.ts
 ```
 
-Add the following enviorement variables inside the local env file:
+Add the following environment variables inside the local env file:
 
 ```
 <!-- Set it to be your localhost for local dev server -->
 NEXTAUTH_URL
 
-<!-- Generate a random base64 number for the secrect  -->
+<!-- Generate a random base64 number for the secret  -->
 NEXTAUTH_SECRET
 ```
 
@@ -74,7 +109,7 @@ Configure Github OAuth application to link your application to the github for Gi
 - Set the authorization callback URL to `http://localhost:3000/api/auth/callback/github`
 - Register the application
 - Generate a client ID and client secret
-- Add the following generated keys against enviorement variables inside the local env file:
+- Add the following generated keys against environment variables inside the local env file:
 
 ```
 GITHUB_ID
@@ -113,7 +148,7 @@ Once you have installed and setup prisma you can create models inside the schema
 npx prisma migrate dev
 ```
 
-Enter migration name after that. It will generate a sequel file which can be viewed under prisma directory.
+Enter migration name after that. It will generate a SQL file which can be viewed under prisma directory.
 
 You can view your data in prisma client:
 
@@ -122,7 +157,7 @@ You can view your data in prisma client:
 npx prisma studio
 ```
 
-Visit the URL provided by the above scrip execution.
+Visit the URL provided by the above script execution.
 
 ## Learn More
 
