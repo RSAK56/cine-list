@@ -16,11 +16,10 @@ const WatchList = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [movieList, setMovieList] = useState<IMovieList | null>(null);
-  const [isWatchListLoading, setIsWatchListLoading] = useState<boolean>(false);
+  const [isWatchListLoading, setIsWatchListLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = () => {
-      setIsWatchListLoading(true);
       if (session?.user?.email) {
         getWatchList({ email: session.user.email })
           .then((watchListMovieIds: number[]) =>
@@ -52,7 +51,7 @@ const WatchList = () => {
         <div className="sm:mt-20">
           <MovieList movieList={movieList} />
         </div>
-      ) : (
+      ) : !isWatchListLoading && !movieList?.results?.length ? (
         <div className="flex justify-center mt-80">
           <NoData
             containerClassNames="flex flex-col items-center"
@@ -82,6 +81,8 @@ const WatchList = () => {
             />
           </NoData>
         </div>
+      ) : (
+        <></>
       )}
     </>
   );
